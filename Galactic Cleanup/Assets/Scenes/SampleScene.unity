@@ -545,6 +545,7 @@ GameObject:
   - component: {fileID: 1633133689}
   - component: {fileID: 1633133690}
   - component: {fileID: 1633133691}
+  - component: {fileID: 1633133692}
   m_Layer: 0
   m_Name: Airplane
   m_TagString: Untagged
@@ -585,12 +586,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   initialFlySpeed: 5
   speedIncreaseAmount: 5
-  YawAmount: 120
+  yawAmount: 120
   skyboxes:
   - {fileID: 2100000, guid: 0a98eaa61401f3c49a068e4fbd6c2e2a, type: 2}
   - {fileID: 2100000, guid: 4fbf92cf634b10148b946a2378bfec52, type: 2}
   - {fileID: 2100000, guid: 9e07b5f1ebeb2764ea80a163086f4ba7, type: 2}
   skyboxChangeInterval: 20
+  playerLives: 3
 --- !u!114 &1633133691
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -608,12 +610,35 @@ MonoBehaviour:
   - {fileID: 141316, guid: 84cc3cd234dfc9d4d9d2e92c0eb0af75, type: 3}
   - {fileID: 130102, guid: 04d0bf4be9447154188d86f6e3b8dce9, type: 3}
   playerTransform: {fileID: 1633133689}
-  spawnDistance: 30
-  spawnRate: 1
-  spawnAreaSize: {x: 15, y: 15, z: 15}
+  spawnDistance: 50
+  initialSpawnRate: 5
+  spawnRateIncreaseInterval: 30
+  spawnRateIncreaseAmount: 5
+  spawnAreaSize: {x: 30, y: 30, z: 30}
   numberOfAsteroids: 7
   maxScale: 1
   destroyDistance: 60
+--- !u!65 &1633133692
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1633133688}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 3.29, y: 1.37, z: 2.9112244}
+  m_Center: {x: 0.03, y: 0.18890572, z: -0.30994415}
 --- !u!1 &1698238106
 GameObject:
   m_ObjectHideFlags: 0
