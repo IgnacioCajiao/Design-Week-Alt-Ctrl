@@ -239,7 +239,7 @@ GameObject:
   - component: {fileID: 494976}
   - component: {fileID: 5444550}
   - component: {fileID: 11425652}
-  - component: {fileID: -6376883301978976121}
+  - component: {fileID: 8904449667594022936}
   m_Layer: 0
   m_Name: Asteroid 1
   m_TagString: Enemy
@@ -303,7 +303,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tumble: 0.25
---- !u!135 &-6376883301978976121
+--- !u!135 &8904449667594022936
 SphereCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

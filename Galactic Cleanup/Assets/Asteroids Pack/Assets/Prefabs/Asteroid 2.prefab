@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 446090}
   - component: {fileID: 5499024}
   - component: {fileID: 11421226}
-  - component: {fileID: -6975359685327176982}
+  - component: {fileID: 8968051802378576233}
   m_Layer: 0
   m_Name: Asteroid 2
   m_TagString: Enemy
@@ -158,7 +158,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tumble: 0.25
---- !u!136 &-6975359685327176982
+--- !u!136 &8968051802378576233
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
