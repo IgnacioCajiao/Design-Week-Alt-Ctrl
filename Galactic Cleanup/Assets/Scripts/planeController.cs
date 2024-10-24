@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.SceneManagement; // Add this directive
+using UnityEngine.SceneManagement;
 
 public class PlaneController : MonoBehaviour
 {
@@ -9,6 +9,7 @@ public class PlaneController : MonoBehaviour
     public Material[] skyboxes; // Assign skybox materials in the Inspector
     public float skyboxChangeInterval = 30f; // Interval in seconds for changing skybox and increasing speed
     public int playerLives = 3; // Number of lives
+    public GameObject explosionPrefab; // Reference to the explosion prefab
 
     private float yaw;
     private float elapsedTime = 0f;
@@ -44,6 +45,12 @@ public class PlaneController : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy"))
         {
             playerLives--;
+
+            // Instantiate explosion effect
+            Instantiate(explosionPrefab, collision.transform.position, collision.transform.rotation);
+
+            // Destroy the asteroid
+            Destroy(collision.gameObject);
 
             if (playerLives <= 0)
             {

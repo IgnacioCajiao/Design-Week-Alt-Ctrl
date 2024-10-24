@@ -81,10 +81,10 @@ public class RockSpawning : MonoBehaviour
         foreach (GameObject asteroid in asteroids)
         {
             float distance = Vector3.Distance(asteroid.transform.position, playerTransform.position);
-            float scale = Mathf.Lerp(0, maxScale, Mathf.Pow(1 - (distance / destroyDistance), 2)); // Adjusted scaling effect
+            float scale = Mathf.Lerp(0, maxScale, Mathf.Pow(1 - (distance / destroyDistance), 2)); 
             asteroid.transform.localScale = new Vector3(scale, scale, scale);
 
-            // Only destroy the asteroid if it moves too far away
+            // Destroy the asteroid if it moves too far away
             if (distance > destroyDistance)
             {
                 Destroy(asteroid);

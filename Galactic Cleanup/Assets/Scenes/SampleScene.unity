@@ -593,6 +593,7 @@ MonoBehaviour:
   - {fileID: 2100000, guid: 9e07b5f1ebeb2764ea80a163086f4ba7, type: 2}
   skyboxChangeInterval: 20
   playerLives: 3
+  explosionPrefab: {fileID: 6146545414153545494, guid: 61753401622c2a947a30e2147430e97d, type: 3}
 --- !u!114 &1633133691
 MonoBehaviour:
   m_ObjectHideFlags: 0
