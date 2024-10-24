@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro; // Add this directive for TextMesh Pro
 
 public class PlaneController : MonoBehaviour
 {
@@ -11,10 +12,19 @@ public class PlaneController : MonoBehaviour
     public int playerLives = 3; // Number of lives
     public GameObject explosionPrefab; // Reference to the explosion prefab
     public GameObject collectableExplosionPrefab; // Reference to the collectable explosion prefab
+    public TMP_Text scoreText; // Reference to the ScoreText TMP element
+    public TMP_Text livesText; // Reference to the LivesText TMP element
 
     private float yaw;
     private float elapsedTime = 0f;
     private int currentSkyboxIndex = 0;
+    private int score = 0; 
+
+    void Start()
+    {
+        scoreText.text = "Score: " + score.ToString();
+        livesText.text = playerLives.ToString();
+    }
 
     void Update()
     {
@@ -52,6 +62,9 @@ public class PlaneController : MonoBehaviour
             // Destroy the asteroid
             Destroy(collision.gameObject);
 
+            // Update lives display
+            livesText.text = playerLives.ToString();
+
             if (playerLives <= 0)
             {
                 Debug.Log("Game Over");
@@ -70,7 +83,11 @@ public class PlaneController : MonoBehaviour
             // Destroy the collectable
             Destroy(collision.gameObject);
 
-            Debug.Log("Collectable collected!");
+            // Update score
+            score += 100;
+            scoreText.text = "Score: " + score.ToString();
+
+            Debug.Log("Collectable collected! Score: " + score);
         }
     }
 }
