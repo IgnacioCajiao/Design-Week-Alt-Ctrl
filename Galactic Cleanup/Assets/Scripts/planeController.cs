@@ -10,6 +10,7 @@ public class PlaneController : MonoBehaviour
     public float skyboxChangeInterval = 30f; // Interval in seconds for changing skybox and increasing speed
     public int playerLives = 3; // Number of lives
     public GameObject explosionPrefab; // Reference to the explosion prefab
+    public GameObject collectableExplosionPrefab; // Reference to the collectable explosion prefab
 
     private float yaw;
     private float elapsedTime = 0f;
@@ -48,7 +49,6 @@ public class PlaneController : MonoBehaviour
 
             // Instantiate explosion effect
             Instantiate(explosionPrefab, collision.transform.position, collision.transform.rotation);
-
             // Destroy the asteroid
             Destroy(collision.gameObject);
 
@@ -61,6 +61,16 @@ public class PlaneController : MonoBehaviour
             {
                 Debug.Log("Lives left: " + playerLives);
             }
+        }
+        else if (collision.gameObject.CompareTag("Collectable"))
+        {
+            // Instantiate explosion effect for collectable
+            Instantiate(collectableExplosionPrefab, collision.transform.position, collision.transform.rotation);
+
+            // Destroy the collectable
+            Destroy(collision.gameObject);
+
+            Debug.Log("Collectable collected!");
         }
     }
 }

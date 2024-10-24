@@ -2,7 +2,8 @@ using UnityEngine;
 
 public class RockSpawning : MonoBehaviour
 {
-    public GameObject[] asteroidPrefabs; // Array of prefabs
+    public GameObject[] asteroidPrefabs; // Array of asteroid prefabs
+    public GameObject[] collectablePrefabs; // Array of collectable prefabs
     public Transform playerTransform;
     public float spawnDistance = 50f; // Initial spawn distance
     public float initialSpawnRate = 2f; // Initial spawn rate
@@ -46,32 +47,40 @@ public class RockSpawning : MonoBehaviour
 
     void SpawnAsteroidGroup()
     {
-        // Loop through and spawn multiple asteroids in a single batch.
+        // Loop through and spawn multiple objects (either asteroids or collectables) in a single batch.
         for (int i = 0; i < numberOfAsteroids; i++)
         {
-            SpawnAsteroid();
+            SpawnObject();
         }
     }
 
-    void SpawnAsteroid()
+    void SpawnObject()
     {
         // Calculate the base spawn position in front of the player based on the specified spawn distance.
         Vector3 spawnPosition = playerTransform.position + playerTransform.forward * spawnDistance;
-        // Add randomness to the X, Y, and Z coordinates to spread out the asteroids in the spawn area.
+        // Add randomness to the X, Y, and Z coordinates to spread out the objects in the spawn area.
         spawnPosition += new Vector3(
             Random.Range(-spawnAreaSize.x / 2, spawnAreaSize.x / 2),
             Random.Range(-spawnAreaSize.y / 2, spawnAreaSize.y / 2),
             Random.Range(-spawnAreaSize.z / 2, spawnAreaSize.z / 2)
         );
 
-        // Select a random prefab from the array
-        GameObject selectedPrefab = asteroidPrefabs[Random.Range(0, asteroidPrefabs.Length)];
+        // Decide whether to spawn an asteroid or a collectable
+        GameObject selectedPrefab;
+        if (Random.value > 0.8f) // Adjust this value to control the frequency of collectables
+        {
+            selectedPrefab = collectablePrefabs[Random.Range(0, collectablePrefabs.Length)];
+        }
+        else
+        {
+            selectedPrefab = asteroidPrefabs[Random.Range(0, asteroidPrefabs.Length)];
+        }
 
-        // Create the asteroid prefab at the calculated spawn position.
-        GameObject asteroid = Instantiate(selectedPrefab, spawnPosition, Quaternion.identity);
+        // Create the selected prefab at the calculated spawn position.
+        GameObject spawnedObject = Instantiate(selectedPrefab, spawnPosition, Quaternion.identity);
 
-        // Start the asteroid small
-        asteroid.transform.localScale = Vector3.zero;
+        // Start the object small
+        spawnedObject.transform.localScale = Vector3.zero;
     }
 
     void ScaleAndDestroyAsteroids()
@@ -81,7 +90,7 @@ public class RockSpawning : MonoBehaviour
         foreach (GameObject asteroid in asteroids)
         {
             float distance = Vector3.Distance(asteroid.transform.position, playerTransform.position);
-            float scale = Mathf.Lerp(0, maxScale, Mathf.Pow(1 - (distance / destroyDistance), 2)); 
+            float scale = Mathf.Lerp(0, maxScale, Mathf.Pow(1 - (distance / destroyDistance), 2));
             asteroid.transform.localScale = new Vector3(scale, scale, scale);
 
             // Destroy the asteroid if it moves too far away
@@ -90,6 +99,22 @@ public class RockSpawning : MonoBehaviour
                 Destroy(asteroid);
             }
         }
+
+        // Find all collectables in the scene
+        GameObject[] collectables = GameObject.FindGameObjectsWithTag("Collectable");
+        foreach (GameObject collectable in collectables)
+        {
+            float distance = Vector3.Distance(collectable.transform.position, playerTransform.position);
+            float scale = Mathf.Lerp(0, maxScale, Mathf.Pow(1 - (distance / destroyDistance), 2));
+            collectable.transform.localScale = new Vector3(scale, scale, scale);
+
+            // Destroy the collectable if it moves too far away
+            if (distance > destroyDistance)
+            {
+                Destroy(collectable);
+            }
+        }
     }
 }
+
 
