@@ -20,7 +20,7 @@ public class Leaderboard : MonoBehaviour
     }
 
     // This function adds the player's score to the list and updates the leaderboard.
-    void AddPlayerScore(string playerName, int score)
+    public void AddPlayerScore(string playerName, int score)
     {
         // Add the new player's score to the list.
         playerScores.Add(new PlayerData(playerName, score));
@@ -49,7 +49,7 @@ public class Leaderboard : MonoBehaviour
     void DisplayLeaderboard()
     {
         // Clear the leaderboard text.
-        leaderboardText.text = "Top 5 Players\n\n";
+        leaderboardText.text = "Top\n\n";
         // Display the top 5 players.
         for (int i = 0; i < Mathf.Min(5, playerScores.Count); i++)
         {

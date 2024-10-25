@@ -74,7 +74,7 @@ public class PlaneController : MonoBehaviour
             Destroy(collision.gameObject);
 
             // Update lives display
-            livesText.text = playerLives.ToString();
+            livesText.text = "Health: " + playerLives.ToString();
 
             if (playerLives <= 0)
             {
