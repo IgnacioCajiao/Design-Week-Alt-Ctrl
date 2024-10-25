@@ -14,35 +14,43 @@ public class PlaneController : MonoBehaviour
     public GameObject collectableExplosionPrefab; // Reference to the collectable explosion prefab
     public TMP_Text scoreText; // Reference to the ScoreText TMP element
     public TMP_Text livesText; // Reference to the LivesText TMP element
+    public AudioSource collectableAudioSource; // Reference to the collectable AudioSource
+    public AudioSource asteroidAudioSource; // Reference to the asteroid AudioSource
 
     private float yaw;
     private float elapsedTime = 0f;
     private int currentSkyboxIndex = 0;
-    private int score = 0; 
+    private int score = 0;
 
     void Start()
     {
         scoreText.text = "Score: " + score.ToString();
-        livesText.text = playerLives.ToString();
+        livesText.text = "Health: " + playerLives.ToString();
     }
 
     void Update()
     {
         // Update elapsed time
         elapsedTime += Time.deltaTime;
+
         // Calculate the current speed based on elapsed time
         float flySpeed = initialFlySpeed + (speedIncreaseAmount * Mathf.Floor(elapsedTime / skyboxChangeInterval));
         transform.position += transform.forward * flySpeed * Time.deltaTime;
+
         // Get input for yaw
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
+
         // Adjust yaw
         yaw += horizontalInput * yawAmount * Time.deltaTime;
+
         // Calculate pitch and roll based on input
         float pitch = Mathf.Lerp(0, 20, Mathf.Abs(verticalInput)) * Mathf.Sign(verticalInput);
         float roll = Mathf.Lerp(0, 30, Mathf.Abs(horizontalInput)) * -Mathf.Sign(horizontalInput);
+
         // Apply rotations
         transform.localRotation = Quaternion.Euler(new Vector3(pitch, yaw, roll));
+
         // Change skybox and increase speed based on elapsed time
         if (skyboxes.Length > 0 && (int)(elapsedTime / skyboxChangeInterval) > currentSkyboxIndex)
         {
@@ -56,6 +64,9 @@ public class PlaneController : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy"))
         {
             playerLives--;
+
+            // Play asteroid collision sound
+            if (asteroidAudioSource != null) asteroidAudioSource.Play();
 
             // Instantiate explosion effect
             Instantiate(explosionPrefab, collision.transform.position, collision.transform.rotation);
@@ -77,6 +88,9 @@ public class PlaneController : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Collectable"))
         {
+            // Play collectable collision sound
+            if (collectableAudioSource != null) collectableAudioSource.Play();
+
             // Instantiate explosion effect for collectable
             Instantiate(collectableExplosionPrefab, collision.transform.position, collision.transform.rotation);
 
@@ -84,7 +98,7 @@ public class PlaneController : MonoBehaviour
             Destroy(collision.gameObject);
 
             // Update score
-            score += 100;
+            score += 1000;
             scoreText.text = "Score: " + score.ToString();
 
             Debug.Log("Collectable collected! Score: " + score);
