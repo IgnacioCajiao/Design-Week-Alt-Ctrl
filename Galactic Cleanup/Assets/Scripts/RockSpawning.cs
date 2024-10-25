@@ -12,7 +12,7 @@ public class RockSpawning : MonoBehaviour
     public Vector3 spawnAreaSize = new Vector3(10f, 10f, 10f);
     public int numberOfAsteroids = 5;
     public float maxScale = 1f;
-    public float destroyDistance = 60f; // Distance beyond which asteroids will be destroyed
+    public float destroyDistance = 60f; 
 
     private float nextSpawnTime = 0f;
     private float elapsedTime = 0f;
@@ -59,15 +59,11 @@ public class RockSpawning : MonoBehaviour
         // Calculate the base spawn position in front of the player based on the specified spawn distance.
         Vector3 spawnPosition = playerTransform.position + playerTransform.forward * spawnDistance;
         // Add randomness to the X, Y, and Z coordinates to spread out the objects in the spawn area.
-        spawnPosition += new Vector3(
-            Random.Range(-spawnAreaSize.x / 2, spawnAreaSize.x / 2),
-            Random.Range(-spawnAreaSize.y / 2, spawnAreaSize.y / 2),
-            Random.Range(-spawnAreaSize.z / 2, spawnAreaSize.z / 2)
-        );
+        spawnPosition += new Vector3(Random.Range(-spawnAreaSize.x / 2, spawnAreaSize.x / 2), Random.Range(-spawnAreaSize.y / 2, spawnAreaSize.y / 2), Random.Range(-spawnAreaSize.z / 2, spawnAreaSize.z / 2));
 
-        // Decide whether to spawn an asteroid or a collectable
         GameObject selectedPrefab;
-        if (Random.value > 0.8f) // Adjust this value to control the frequency of collectables
+        
+        if (Random.value > 0.8f) 
         {
             selectedPrefab = collectablePrefabs[Random.Range(0, collectablePrefabs.Length)];
         }

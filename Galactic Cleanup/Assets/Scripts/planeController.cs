@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TMPro; // Add this directive for TextMesh Pro
+using TMPro;
 
 public class PlaneController : MonoBehaviour
 {
@@ -10,17 +10,18 @@ public class PlaneController : MonoBehaviour
     public Material[] skyboxes; // Assign skybox materials in the Inspector
     public float skyboxChangeInterval = 30f; // Interval in seconds for changing skybox and increasing speed
     public int playerLives = 3; // Number of lives
-    public GameObject explosionPrefab; // Reference to the explosion prefab
-    public GameObject collectableExplosionPrefab; // Reference to the collectable explosion prefab
-    public TMP_Text scoreText; // Reference to the ScoreText TMP element
-    public TMP_Text livesText; // Reference to the LivesText TMP element
-    public AudioSource collectableAudioSource; // Reference to the collectable AudioSource
-    public AudioSource asteroidAudioSource; // Reference to the asteroid AudioSource
+    public GameObject explosionPrefab; 
+    public GameObject collectableExplosionPrefab; 
+    public TMP_Text scoreText; 
+    public TMP_Text livesText; 
+    public AudioSource collectableAudioSource; 
+    public AudioSource asteroidAudioSource; 
 
     private float yaw;
     private float elapsedTime = 0f;
     private int currentSkyboxIndex = 0;
     private int score = 0;
+    private int skyboxChangeCount = 0; // Counter for the number of skybox changes
 
     void Start()
     {
@@ -43,19 +44,18 @@ public class PlaneController : MonoBehaviour
 
         // Adjust yaw
         yaw += horizontalInput * yawAmount * Time.deltaTime;
-
         // Calculate pitch and roll based on input
         float pitch = Mathf.Lerp(0, 20, Mathf.Abs(verticalInput)) * Mathf.Sign(verticalInput);
         float roll = Mathf.Lerp(0, 30, Mathf.Abs(horizontalInput)) * -Mathf.Sign(horizontalInput);
-
         // Apply rotations
         transform.localRotation = Quaternion.Euler(new Vector3(pitch, yaw, roll));
 
         // Change skybox and increase speed based on elapsed time
-        if (skyboxes.Length > 0 && (int)(elapsedTime / skyboxChangeInterval) > currentSkyboxIndex)
+        if (skyboxes.Length > 0 && skyboxChangeCount < 2 && (int)(elapsedTime / skyboxChangeInterval) > currentSkyboxIndex)
         {
             currentSkyboxIndex = (int)(elapsedTime / skyboxChangeInterval) % skyboxes.Length;
             RenderSettings.skybox = skyboxes[currentSkyboxIndex];
+            skyboxChangeCount++;
         }
     }
 
@@ -65,21 +65,18 @@ public class PlaneController : MonoBehaviour
         {
             playerLives--;
 
-            // Play asteroid collision sound
             if (asteroidAudioSource != null) asteroidAudioSource.Play();
-
-            // Instantiate explosion effect
             Instantiate(explosionPrefab, collision.transform.position, collision.transform.rotation);
-            // Destroy the asteroid
             Destroy(collision.gameObject);
 
-            // Update lives display
+            playerLives = Mathf.Max(playerLives, 0);
             livesText.text = "Health: " + playerLives.ToString();
 
             if (playerLives <= 0)
             {
+                PlayerPrefs.SetInt("FinalScore", score); 
                 Debug.Log("Game Over");
-                SceneManager.LoadScene("You Lose"); // Load the "You Lose" scene
+                SceneManager.LoadScene("You Lose");
             }
             else
             {
@@ -88,19 +85,12 @@ public class PlaneController : MonoBehaviour
         }
         else if (collision.gameObject.CompareTag("Collectable"))
         {
-            // Play collectable collision sound
             if (collectableAudioSource != null) collectableAudioSource.Play();
-
-            // Instantiate explosion effect for collectable
             Instantiate(collectableExplosionPrefab, collision.transform.position, collision.transform.rotation);
-
-            // Destroy the collectable
             Destroy(collision.gameObject);
 
-            // Update score
             score += 1000;
             scoreText.text = "Score: " + score.ToString();
-
             Debug.Log("Collectable collected! Score: " + score);
         }
     }

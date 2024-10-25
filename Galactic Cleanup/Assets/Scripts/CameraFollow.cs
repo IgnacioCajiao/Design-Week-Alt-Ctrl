@@ -4,7 +4,7 @@ public class CameraFollow : MonoBehaviour
 {
     public Transform plane;
     public Vector3 offset;
-    public float smoothTime = 0.3f; // Adjust this for smoothing effect
+    public float smoothTime = 0.3f; 
     private Vector3 velocity = Vector3.zero;
 
     void LateUpdate()
