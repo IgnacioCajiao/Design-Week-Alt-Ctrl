@@ -1759,7 +1759,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialFlySpeed: 5
-  speedIncreaseAmount: 5
+  speedIncreaseAmount: 3
   yawAmount: 100
   skyboxes:
   - {fileID: 2100000, guid: 0a98eaa61401f3c49a068e4fbd6c2e2a, type: 2}
