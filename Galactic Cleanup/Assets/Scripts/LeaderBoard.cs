@@ -1,82 +1,84 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 
-public class Leaderboard : MonoBehaviour
-{
-    // This is where we will display the leaderboard in the UI.
-    public TextMeshProUGUI leaderboardText;
-    // List to hold player scores and their names.
-    private List<PlayerData> playerScores = new List<PlayerData>();
-    // The current player's score (i should replace this with the actual score from the game).
-    public int currentPlayerScore; // For example, distance traveled in your endless runner
-    public string currentPlayerName; // For example, "Player 1", "Player 2", etc.
-
-    void Start()
-    {
-        // When the game ends, call this function to add the current player's score and update the leaderboard.
-        AddPlayerScore(currentPlayerName, currentPlayerScore);
-    }
-
-    // This function adds the player's score to the list and updates the leaderboard.
-    public void AddPlayerScore(string playerName, int score)
-    {
-        // Add the new player's score to the list.
-        playerScores.Add(new PlayerData(playerName, score));
-
-        // Sort the list by score in descending order (highest score first).
-        for (int i = playerScores.Count - 1; i > 0; i--)
-        {
-            if (playerScores[i].score > playerScores[i - 1].score)
-            {
-                var temp = playerScores[i];
-                playerScores[i] = playerScores[i - 1];
-                playerScores[i - 1] = temp;
-            }
-        }
-
-        // If there are more than 5 players, we keep only the top 5.
-        if (playerScores.Count > 5)
-        {
-            playerScores.RemoveAt(5); // Remove the 6th place player if there are more than 5 players.
-        }
-
-        DisplayLeaderboard();
-    }
-
-    // This function displays the top 5 players and the current player's rank if they aren't in the top 5.
-    void DisplayLeaderboard()
-    {
-        // Clear the leaderboard text.
-        leaderboardText.text = "Top\n\n";
-        // Display the top 5 players.
-        for (int i = 0; i < Mathf.Min(5, playerScores.Count); i++)
-        {
-            leaderboardText.text += (i + 1) + ". " + playerScores[i].playerName + " - " + playerScores[i].score + "\n";
-        }
-
-        // Find the rank of the current player.
-        int playerRank = playerScores.FindIndex(p => p.playerName == currentPlayerName) + 1;
-        // If the current player is outside the top 5, show their rank separately.
-        if (playerRank > 5)
-        {
-            leaderboardText.text += "\nYour Rank: " + playerRank + " - Score: " + currentPlayerScore;
-        }
-    }
-}
-
-// This class holds the player's name and score.
-public class PlayerData
+[Serializable]
+public class LeaderboardEntry
 {
     public string playerName;
     public int score;
-    // Constructor to create a new player data entry.
-    public PlayerData(string name, int score)
-    {
-        this.playerName = name;
-        this.score = score;
-    }
 }
 
+[Serializable]
+public class LeaderboardData
+{
+    public List<LeaderboardEntry> entries = new List<LeaderboardEntry>();
+}
 
+public class LeaderBoard : MonoBehaviour
+{
+    private const string SaveKey = "Top5Leaderboard";
+    public LeaderboardData data = new LeaderboardData();
+
+    private void Awake()
+    {
+        LoadLeaderboard();
+    }
+
+    public void AddScore(string playerName, int score)
+    {
+        LeaderboardEntry newEntry = new LeaderboardEntry
+        {
+            playerName = playerName,
+            score = score
+        };
+
+        data.entries.Add(newEntry);
+        data.entries.Sort((a, b) => b.score.CompareTo(a.score));
+
+        if (data.entries.Count > 5)
+        {
+            data.entries.RemoveRange(5, data.entries.Count - 5);
+        }
+
+        SaveLeaderboard();
+    }
+
+    public List<LeaderboardEntry> GetEntries()
+    {
+        return data.entries;
+    }
+
+    public void SaveLeaderboard()
+    {
+        string json = JsonUtility.ToJson(data);
+        PlayerPrefs.SetString(SaveKey, json);
+        PlayerPrefs.Save();
+    }
+
+    public void LoadLeaderboard()
+    {
+        if (PlayerPrefs.HasKey(SaveKey))
+        {
+            string json = PlayerPrefs.GetString(SaveKey);
+            data = JsonUtility.FromJson<LeaderboardData>(json);
+        }
+        else
+        {
+            data = new LeaderboardData();
+        }
+    }
+    public void ClearLeaderboard()
+    {
+        PlayerPrefs.DeleteKey("Top5Leaderboard");
+        data = new LeaderboardData();
+    }
+
+    public bool IsTop5Score(int score)
+    {
+        if (data.entries.Count < 5)
+            return true;
+
+        return score > data.entries[data.entries.Count - 1].score;
+    }
+}
