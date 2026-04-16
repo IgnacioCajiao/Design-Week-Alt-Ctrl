@@ -45,7 +45,7 @@ public class PlaneController : MonoBehaviour
         // Adjust yaw
         yaw += horizontalInput * yawAmount * Time.deltaTime;
         // Calculate pitch and roll based on input
-        float pitch = Mathf.Lerp(0, 20, Mathf.Abs(verticalInput)) * Mathf.Sign(verticalInput);
+        float pitch = Mathf.Lerp(0, 30, Mathf.Abs(verticalInput)) * Mathf.Sign(verticalInput);
         float roll = Mathf.Lerp(0, 30, Mathf.Abs(horizontalInput)) * -Mathf.Sign(horizontalInput);
         // Apply rotations
         transform.localRotation = Quaternion.Euler(new Vector3(pitch, yaw, roll));
